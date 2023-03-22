@@ -387,7 +387,7 @@ void roboscanPublisher::initialise()
 
 	this->set_parameter(pLensType);
 	this->set_parameter(pImageType);
-//	this->set_parameter(pHdr_mode);
+	this->set_parameter(pHdr_mode);
 	this->set_parameter(pInt0);
 	this->set_parameter(pInt1);
 //	this->set_parameter(pInt2);
