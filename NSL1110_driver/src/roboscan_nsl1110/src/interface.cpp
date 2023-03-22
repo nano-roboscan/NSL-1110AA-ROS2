@@ -239,7 +239,7 @@ void Interface::setIntegrationTime3dHdr(uint16_t int3d)
 void Interface::setHDRMode(uint8_t mode)
 {
 	char payloadStr[100];
-	sprintf(payloadStr, "enableHDR %d\n", mode == 0 ? 0 : 1);	// 0:off, 1 : spatialHdr
+	sprintf(payloadStr, "enableHDR %d\n", mode == 1 ? 1 : 0);	// 0:off, 1 : spatialHdr
 	tcpConnection.sendCommand((uint8_t *)payloadStr, strlen(payloadStr));
 }
 

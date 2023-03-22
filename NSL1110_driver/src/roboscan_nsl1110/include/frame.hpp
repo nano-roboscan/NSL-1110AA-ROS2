@@ -17,6 +17,7 @@ namespace nanosys {
         uint16_t dataType;
         uint16_t width;
         uint16_t height;
+        uint16_t hdrMode;
         uint32_t px_size;        
         uint8_t stride;        
         std::vector<uint8_t> distData;
@@ -24,7 +25,9 @@ namespace nanosys {
         std::vector<uint8_t> dcsData;
 		
 
-        Frame(uint16_t, uint64_t, uint16_t, uint16_t);
+        Frame(uint16_t, uint64_t, uint16_t, uint16_t, uint16_t);
+		void getComparedHDRAmplitudeImage(uint16_t *pMemAmplitude, uint16_t *pMemDistance);
+		void getComparedHDRDistanceImage(uint16_t *pMemDistance);
         void sortData(const Packet &data, int maxDistance);
     };
 

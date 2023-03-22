@@ -105,7 +105,7 @@ void roboscanPublisher::thread_callback()
 		if( startStreaming(databuf) ){
 			int width = lidarParam.roi_rightX-lidarParam.roi_leftX+1;
 			int height = (lidarParam.roi_bottomY-lidarParam.roi_topY+1)*2;
-			Frame frame(interface.getDataType(), currentFrame_id++, width, height);
+			Frame frame(interface.getDataType(), currentFrame_id++, width, height, lidarParam.hdr_mode);
 			frame.sortData(databuf, maxDistance);
 			publishFrame(&frame);
 		}
@@ -330,7 +330,7 @@ void roboscanPublisher::initialise()
 
 	rclcpp::Parameter pLensType("B. lensType", lidarParam.lensType);
 	rclcpp::Parameter pImageType("C. imageType", lidarParam.imageType);
-//	rclcpp::Parameter pHdr_mode("D. hdr_mode", lidarParam.hdr_mode);
+	rclcpp::Parameter pHdr_mode("D. hdr_mode", lidarParam.hdr_mode);
 	rclcpp::Parameter pInt0("E. int0", lidarParam.int0);
 	rclcpp::Parameter pInt1("F. int1", lidarParam.int1);
 //	rclcpp::Parameter pInt2("G. int2", lidarParam.int2);
@@ -359,7 +359,7 @@ void roboscanPublisher::initialise()
 
 	this->declare_parameter<int>("B. lensType", lidarParam.lensType);
 	this->declare_parameter<int>("C. imageType", lidarParam.imageType);
-//	this->declare_parameter<int>("D. hdr_mode", lidarParam.hdr_mode);
+	this->declare_parameter<int>("D. hdr_mode", lidarParam.hdr_mode);
 	this->declare_parameter<int>("E. int0", lidarParam.int0);
 	this->declare_parameter<int>("F. int1", lidarParam.int1);
 //	this->declare_parameter<int>("G. int2", lidarParam.int2);
