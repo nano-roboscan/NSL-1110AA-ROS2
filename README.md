@@ -5,7 +5,7 @@
  - Ubuntu22.04.1 LTS
  - ROS2 Humble
  - OPENCV 4.5.4
- - Tcp_connection.hpp : HOST ip 를 라이다 ip에 맞게 수정 필요.(default : 192.169.0.210)
+ - Roboscan_publish_noe.cpp::initialise() : 라이다 ip에 맞게 수정 필요.(default :: lidarParam.ipAddr = "192.168.0.210")
  
  
 2. Build NSL-1110AA demo
