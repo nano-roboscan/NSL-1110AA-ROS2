@@ -44,6 +44,9 @@ imageType 1 : Distance
 imageType 2 : Distance / Amplitude
 imageType 3 : DCS
 
+hdr_mode 0 : HDR off
+hdr_mode 1 : Spatial HDR
+
 int0 , int2 = 0 ~ 4000(LED)
 
 intGr = 0 ~ 40000(LED)
@@ -52,8 +55,6 @@ modIndex 0 : 24MHz
 modIndex 1 : 12MHz
 modIndex 2 : 6MHz
 modIndex 3 : 3MHz
-
-
 
 transformAngle : angle (rviz-based y-axis rotation)
 ```
