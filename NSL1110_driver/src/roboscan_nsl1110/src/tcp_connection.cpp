@@ -8,10 +8,12 @@ namespace nanosys {
 
 typedef std::vector<uint8_t> Packet;
 
+char TcpConnection::HOST[20];
+
 TcpConnection::TcpConnection(boost::asio::io_service& ioService)
   : resolver(ioService), socket(ioService), state(STATE_DISCONNECTED) 
 {
-
+	strcpy(HOST, "192.168.7.2");
 }
 
 TcpConnection::~TcpConnection() {
@@ -22,9 +24,16 @@ TcpConnection::~TcpConnection() {
   }
 }
 
+void TcpConnection::setIpAddr(std::string ipAddr)
+{
+	strcpy(HOST, ipAddr.c_str());
+
+	printf("ipaddr = %s\n", HOST);
+}
+
 bool TcpConnection::sendCommand(uint8_t *data, int data_len) 
 {
-	connect();
+	if( connect() > 0 ) return false;
 
 	std::ostringstream os;
 
@@ -38,6 +47,7 @@ bool TcpConnection::sendCommand(uint8_t *data, int data_len)
 	socket.write_some(boost::asio::buffer(os.str(), os.tellp()), error);
 	if (error) {
 //		throw boost::system::system_error(error);
+		updateState(STATE_DISCONNECTED);
 		return false;
 	}
 	
@@ -53,7 +63,7 @@ bool TcpConnection::sendCommand(uint8_t *data, int data_len)
 
 bool TcpConnection::sendCommand(uint8_t *data, int data_len, Packet &databuf ) 
 {
-	connect();
+	if( connect() > 0 ) return false;
 
 	std::ostringstream os;
 
@@ -67,21 +77,22 @@ bool TcpConnection::sendCommand(uint8_t *data, int data_len, Packet &databuf )
 	socket.write_some(boost::asio::buffer(os.str(), os.tellp()), error);
 	if (error) {
 //		throw boost::system::system_error(error);
+		updateState(STATE_DISCONNECTED);
 		return false;
 	}
 	
 	bool bRet = waitData(databuf);
 
 	disconnect();
-
   	return bRet;
 }
 
 
-void TcpConnection::connect() {
-  if (isConnected()) return;
+int TcpConnection::connect() {
+  if (isConnected()) return 0;
 
   updateState(STATE_CONNECTING);
+
   tcp::resolver::query query(HOST, PORT);
   tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
   tcp::resolver::iterator end;
@@ -91,24 +102,32 @@ void TcpConnection::connect() {
     socket.close();
     socket.connect(*endpoint_iterator++, error);
   }
+  
   if (error) {
-    throw::boost::system::system_error(error);
+	revertState();
+	printf("connect error :: %s\n", HOST);
+    //throw::boost::system::system_error(error);
+	return 1;
   }
+  
   updateState(STATE_CONNECTED);
+  return 0;
 }
 
-void TcpConnection::disconnect() {
-  if (isDisconnected()) return;
+int TcpConnection::disconnect() {
+  if (isDisconnected()) return 0;
 
   updateState(STATE_CLOSING);
 
   boost::system::error_code error;
   socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
   if (error) {
-    revertState();
-    throw boost::system::system_error(error);
+	updateState(STATE_DISCONNECTED);
+    //throw boost::system::system_error(error);
+    return 1;
   }
   updateState(STATE_DISCONNECTED);
+  return 0;
 }
 
 void TcpConnection::waitAck() {

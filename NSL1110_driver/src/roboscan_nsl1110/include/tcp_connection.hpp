@@ -14,7 +14,7 @@ class TcpConnection {
   static const int ACK_BUF_SIZE = 128;
   static constexpr const char* PORT = "50660";
 //  static constexpr const char* HOST = "192.168.7.2";
-  static constexpr const char* HOST = "192.168.0.210";
+  static char HOST[20];// = {"192.168.0.210"};
 
 public:
   enum State {
@@ -28,6 +28,7 @@ public:
   TcpConnection(boost::asio::io_service &);
   ~TcpConnection();
 
+  void setIpAddr(std::string ipAddr);
   bool sendCommand(uint8_t *data, int data_len);
   bool sendCommand(uint8_t *data, int data_len, Packet &databuf );
 
@@ -36,8 +37,8 @@ private:
   tcp::socket socket;
   mutable State state, previousState;
 
-  void connect();
-  void disconnect();
+  int connect();
+  int disconnect();
   void waitAck();
   bool waitData(Packet &databuf);
   void updateState(State) const;

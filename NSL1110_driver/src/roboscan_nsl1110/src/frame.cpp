@@ -16,7 +16,8 @@ hdrMode(hdrMode_),
 px_size(sizeof(uint16_t)),
 distData(std::vector<uint8_t>(width * height * px_size)), //16 bit
 amplData(std::vector<uint8_t>(width * height * px_size)), //16 bit
-dcsData(std::vector<uint8_t> (width * height * px_size * 4)) //16 bit 4 dcs
+dcsData(std::vector<uint8_t> (width * height * px_size * 4)), //16 bit 4 dcs
+dist2BData(std::vector<uint16_t>(width * height))
 {    
 	
 }
@@ -93,7 +94,7 @@ void Frame::getComparedHDRDistanceImage(uint16_t *pMemDistance)
 void Frame::sortData(const Packet &data, int maxDistance)
 {    
     int i;
-	int distanceData;
+	uint16_t distanceData;
 	
     if(dataType == Frame::AMPLITUDE){ //distance - amplitude
 
@@ -113,13 +114,14 @@ void Frame::sortData(const Packet &data, int maxDistance)
 				distanceData = (maxDistance * distanceData / MAX_PHASE);
 			}
 
+			dist2BData[i>>1] = distanceData;
+
             distData[i]   = distanceData & 0xFF;
             distData[i+1] = (distanceData>>8) & 0xFF;
 
             amplData[i]   = data[i+distanceSize];
             amplData[i+1] = data[i+distanceSize+1];				
         }
-
     }
 	else if(dataType == Frame::DISTANCE){ //distance
 
@@ -135,6 +137,8 @@ void Frame::sortData(const Packet &data, int maxDistance)
 			if( distanceData < Frame::PIXEL_VALID_DATA ){
 				distanceData = (maxDistance * distanceData / MAX_PHASE);
 			}
+
+			dist2BData[i>>1] = distanceData;
 
             distData[i]   = distanceData & 0xFF;
             distData[i+1] = (distanceData>>8) & 0xFF;

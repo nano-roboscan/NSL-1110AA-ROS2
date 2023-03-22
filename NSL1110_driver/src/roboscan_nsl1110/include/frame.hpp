@@ -23,6 +23,7 @@ namespace nanosys {
         std::vector<uint8_t> distData;
         std::vector<uint8_t> amplData;
         std::vector<uint8_t> dcsData;
+        std::vector<uint16_t> dist2BData;
 		
 
         Frame(uint16_t, uint64_t, uint16_t, uint16_t, uint16_t);

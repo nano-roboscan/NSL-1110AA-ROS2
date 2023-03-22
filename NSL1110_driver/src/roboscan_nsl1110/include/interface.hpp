@@ -21,11 +21,12 @@ public:
   Interface();
   ~Interface();
 
-  void initCommand();
+  void setIpAddr(std::string ipAddr);
+  bool initCommand();
   uint8_t isStream();
   uint8_t getDataType();
   void startStream();
-  void stopStream();  
+  bool stopStream();  
   bool streamDCS(Packet &databuf);
   bool streamGrayscale(Packet &databuf);
   bool streamDistance(Packet &databuf);

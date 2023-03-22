@@ -116,14 +116,23 @@ Interface::~Interface() {
     ioService.stop();
 }
 
-void Interface::initCommand() 
+void Interface::setIpAddr(std::string ipAddr)
+{
+	tcpConnection.setIpAddr(ipAddr);
+}
+
+bool Interface::initCommand() 
 {
 	int size = (sizeof(initialcmd)/sizeof(char*));
 
 	for(int i = 0; i < size ; i++){
-		tcpConnection.sendCommand((uint8_t *)initialcmd[i], strlen(initialcmd[i]));
+		if( !tcpConnection.sendCommand((uint8_t *)initialcmd[i], strlen(initialcmd[i])) ){
+			printf("error init command\n");
+			return false;
+		}
 	}
 
+	return true;
 }
 
 
@@ -142,7 +151,7 @@ uint8_t Interface::getDataType(){
 }
 
 
-void Interface::stopStream() {
+bool Interface::stopStream() {
 
 	isStreaming = 0;
 	
@@ -150,7 +159,7 @@ void Interface::stopStream() {
 	
 	char payloadStr[100];
 	sprintf(payloadStr, "stopVideo\n");
-    tcpConnection.sendCommand((uint8_t *)payloadStr, strlen(payloadStr));
+    return tcpConnection.sendCommand((uint8_t *)payloadStr, strlen(payloadStr));
 }
 
 bool Interface::streamDCS(Packet &databuf)

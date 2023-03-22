@@ -32,6 +32,8 @@ namespace nanosys {
         uint16_t imageType;
         uint16_t lensType;
         uint16_t old_lensType;
+
+		std::string	ipAddr;
         
 		bool startStream;
 		bool publishPointCloud;
@@ -123,9 +125,15 @@ namespace nanosys {
 		boost::scoped_ptr<boost::thread> publisherThread;
 		bool runThread;
 		bool bSetReconfigure;
+		bool bInitCmd;
+
 	private:
 		void initialise();
 		void setParameters();
+		void getMouseEvent( int &mouse_xpos, int &mouse_ypos );
+		cv::Mat addDistanceInfo(cv::Mat distMat, std::vector<uint16_t> dist2BData, int width);
+		int mouseXpos, mouseYpos;
+		
 		OnSetParametersCallbackHandle::SharedPtr callback_handle_;
 		rcl_interfaces::msg::SetParametersResult parametersCallback( const std::vector<rclcpp::Parameter> &parameters);
 
